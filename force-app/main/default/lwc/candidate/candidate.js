@@ -1,5 +1,6 @@
 import { LightningElement, wire, track } from 'lwc';
 import getAssess from '@salesforce/apex/candidate.getAssess';
+import getAssessDet from '@salesforce/apex/candidate.getAssessDet';
 import { createRecord } from 'lightning/uiRecordApi';
 import Cand from '@salesforce/schema/Candidate__c';
 
@@ -70,18 +71,17 @@ export default class Candidate extends NavigationMixin(LightningElement) {
         handleAssessChange(event){
             this.assess = event.target.value; 
             this.assessName=event.target.options.find(opt => opt.value === event.detail.value).label; 
-            if(this.assessName=='Salesforce'){
-                this.numQues=4;
-                this.numMins=4;
-            }
-            if(this.assessName=='SQL'){
-                this.numQues=3;
-                this.numMins=3;
-            }
-            if(this.assessName=='Java'){
-                this.numQues=2;
-                this.numMins=2;
-            }
+            
+            getAssessDet({assId: this.assess})
+            .then(result => {
+                this.numQues = result[0].No_of_Questions_to_Answer__c;
+                this.numMins = result[0].Time__c;
+                this.error = undefined;
+            })
+            .catch(error => {
+                this.error = error;
+                
+            });           
 
         }  
         
@@ -119,15 +119,31 @@ export default class Candidate extends NavigationMixin(LightningElement) {
         }  
         
         StartTest(){
+            // this[NavigationMixin.Navigate]({
+            //     type: "standard__component",
+            //     attributes: {
+            //         componentName: "c__NavigationToQuesHelper"
+            //     },
+            //     state: {
+            //          c__candId: this.candId,   
+            //         c__assessId: this.assess,
+            //         c__assessName: this.assessName,
+            //         c__candName: this.name
+            //     }
+            // });
             this[NavigationMixin.Navigate]({
-                type: "standard__component",
+                type: 'comm__namedPage',
                 attributes: {
-                    componentName: "c__NavigationToQuesHelper"
+                    name: 'questions__c'
                 },
                 state: {
-                     c__candId: this.candId,   
-                    c__assessId:this.assess
-                }
+                             'candId': this.candId,   
+                            'assessId': this.assess,
+                            'assessName': this.assessName,
+                            'candName': this.name,
+                            'numQues':this.numQues,
+                            'numMins': this.numMins
+                        }
             });
         }
 

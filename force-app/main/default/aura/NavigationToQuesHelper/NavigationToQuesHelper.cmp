@@ -1,8 +1,10 @@
-<aura:component implements="flexipage:availableForAllPageTypes,lightning:isUrlAddressable" access="global">
+<aura:component implements="flexipage:availableForAllPageTypes,lightning:isUrlAddressable,forceCommunity:availableForAllPageTypes" access="global">
     <aura:attribute type="String" name="candId"/>
     <aura:attribute type="String" name="assessId"/>
+    <aura:attribute type="String" name="assessName"/>
+    <aura:attribute type="String" name="candName"/>
     <aura:handler name="init" value="{!this}" action="{!c.init}"/>    
     <div class="slds-card">
-        <c:questions assessId="{!v.assessId}" candId="{!v.candId}"/>
+        <c:questions assessId="{!v.assessId}" candId="{!v.candId}" candName="{!v.candName}" assessName="{!v.assessName}"/>
     </div>    
 </aura:component>
