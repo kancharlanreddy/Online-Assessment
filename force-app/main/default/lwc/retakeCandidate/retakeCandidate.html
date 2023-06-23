@@ -1,0 +1,54 @@
+<template>
+    <lightning-card  variant="Narrow"  title="Registered Candidate?" icon-name="standard:avatar">
+        <!-- <lightning-button-icon  icon-name="utility:down" variant="border-filled" alternative-text="Show More" slot="actions"></lightning-button-icon>
+        <p class="slds-p-horizontal_small">Card Body Narrow (custom component)</p>
+        <p slot="footer">Card Footer</p> -->
+        <div class="slds-grid slds-gutters">
+        <div class="slds-col">
+        <div class="slds-p-around_medium lgc-bg">
+            <lightning-input type="email" label="Email" required name="email" value={canEmail} onchange={emailHandler} placeholder="type here..."></lightning-input>
+        </div> 
+        <span style="float:right;">
+            <lightning-button variant="brand" label="Check" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
+        </span>
+    </div>
+</div>
+        <template if:true={showModal}>
+            <div class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                  <header class="slds-modal__header">
+                    <h2 class="slds-modal__title">{assessName}</h2>
+                  </header>
+                  <div class="slds-modal__content slds-p-around_medium">                
+                    Hi <b>{name}</b>, <br>
+                    Based on your domain, you have to complete the assessment on <b>{assessName}</b> which consists of <b>{numQues} questions</b> in <b>{numMins}:00 minutes</b>.
+                  </div>
+                  <footer class="slds-modal__footer">
+                     <!-- <button class="slds-button slds-button_neutral" onclick={closeModal}>Cancel</button> -->
+                    <button class="slds-button slds-button_brand" onclick={StartTest}>Start Test</button>                    
+                  </footer>
+                </div>
+              </div>
+              <div class="slds-backdrop slds-backdrop_open"></div>
+           
+          </template>
+    
+        <!-- <lightning-layout multiple-rows>
+            <lightning-layout-item size="12" padding="around-small" small-device-size="3" medium-device-size="6" large-device-size="3" >
+                <div class="custom-box">Hi, I am checking the data reperesntation</div>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" padding="around-small" small-device-size="3" medium-device-size="6" large-device-size="3">
+                <div class="custom-box">Hi, I am checking the data reperesntation</div>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" padding="around-small" small-device-size="3" medium-device-size="6" large-device-size="3">
+                <div class="custom-box">Hi, I am checking the data reperesntation</div>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" padding="around-small" small-device-size="3" medium-device-size="6" large-device-size="3">
+                <div class="custom-box">Hi, I am checking the data reperesntation</div>
+            </lightning-layout-item>
+        </lightning-layout> -->
+
+    </lightning-card>
+
+    
+</template>

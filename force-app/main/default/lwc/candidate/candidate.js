@@ -101,7 +101,7 @@ export default class Candidate extends NavigationMixin(LightningElement) {
                 if(ele.name=="phone")
                 this.phone=ele.value;                              
             },this);            
-
+            // if(this.email.length>3 && this.name.length>3 && this.phone.length==10 && this.assess.length>3 && this.this.qual.length>=2){
             var field={'Candidate_Name__c':this.name,'Email__c':this.email,'Phone__c':this.phone,'Assessment__c':this.assess, 'Qualification__c':this.qual}; 
              const can_details={apiName:Cand.objectApiName, fields: field };
 
@@ -113,9 +113,11 @@ export default class Candidate extends NavigationMixin(LightningElement) {
              })
              .catch(error=>{
                 console.log('Name',this.name,'Email__c',this.email,'Phone__c',this.phone,'Assessment__c',this.assess,'Date',this.date,'Qualification__c',this.qual);
-                alert("Some error has occured :"+JSON.stringify(error));
+                alert(error.body.message);
              });
-
+            // }else{
+            //     alert('Please fill all mandatory fields correctly.');
+            // }
         }  
         
         StartTest(){
