@@ -1,7 +1,4 @@
 import { LightningElement, api, track, wire } from 'lwc';
-//import getAssess from '@salesforce/apex/assessment.getAssess';
-import { refreshApex } from '@salesforce/apex';
-import getAssessments from '@salesforce/apex/assessment.getAssessments';
 import getAllQuestions from '@salesforce/apex/assessment.getAllQuestions';
 import { NavigationMixin } from 'lightning/navigation';
 import { createRecord } from 'lightning/uiRecordApi';
@@ -31,15 +28,7 @@ closeModal1(){
 @track showModal2 = false;
 closeModal2(){
     this.showModal2=false;   
-    
     window.location.replace("https://bhavani23-dev-ed.my.site.com/hospital/secur/logout.jsp");
-    
-  //   this[NavigationMixin.Navigate]({
-  //     type: 'comm__logoutPage',
-  //     attributes: {
-  //       actionName: 'logout'
-  //     }
-  // });
 }
 
 @track examStarted = false;
@@ -55,21 +44,7 @@ closeModal2(){
     timerSeconds = '00';
     timer;
     @track score = 0;
-    @track selectedAnswer;     
-
-    // renderedCallback(){
-    //   alert('RenderedCallBack');
-    //   console.log('RenderedCallBack');
-    //  // window.location.replace("https://bhavani23-dev-ed.my.site.com/hospital/secur/logout.jsp");
-    // }
-    // render(){
-    //   alert('render');
-    //   console.log('Render');
-    // }
-    // disconnectedCallback() {
-    //   alert('DisConnectedCallBack');
-    //   console.log('DisConnectedCallBack');
-    // }
+    @track selectedAnswer;         
 
     constructor() {
       super();
@@ -82,9 +57,7 @@ closeModal2(){
       });
    }
 
-    connectedCallback(){
-      // alert('ConnectedCallBack');
-      // console.log('ConnectedCallBack');
+    connectedCallback(){      
       let oldurl=window.location.href;
       let newurl=new URL(oldurl).searchParams;
       this.candId= newurl.get('candId');
@@ -130,27 +103,19 @@ closeModal2(){
       clearInterval(this.timerInterval);
     }  
 
-    //getQuestions() {
         @wire(getAllQuestions, { assessment: '$assessId', numQue: '$numQues' })
-           // .then((result) => {
+           
             ques({data,error}){
                 if(data){                
                     console.log('Assessment Id : ', this.assessId);    
                 this.examStarted = true;
                 this.questionWrapper = data;
-               // this.startButtonDisabled = true;
                 this.startTimer();
                 }
                 if(error){
                     console.error('Error fetching questions', error);
                 }                
             }
-                
-           // })
-            // .catch((error) => {
-            //     console.error('Error fetching questions', error);
-            // });
-   // }
 
     onSubmit(event) {
       this.submitButtonDisabled = true;
@@ -169,9 +134,7 @@ closeModal2(){
         }
         let wrong=this.questionWrapper.length-score;
         // alert('Your Score Is ' + score);
-        // alert('Wrong ' + wrong);
-
-
+       
        var field={'Correct_Answers__c':score,'Score__c':score,'Candidate__c':this.candId,'Assesment__c':this.assessId, 'Wrong_Answers__c':wrong}; 
              const res_details={apiName:result.objectApiName, fields: field };
 
@@ -217,8 +180,7 @@ closeModal2(){
         } else {
           // Select the option
           updatedQuestion.selectedAnswer = selectedOption;
-        }       
-
+        }
         // Update the questionWrapper array with the modified question object
         this.questionWrapper = [
           ...this.questionWrapper.slice(0, questionIndex),
