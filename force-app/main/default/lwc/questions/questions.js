@@ -21,7 +21,8 @@ numMins=0;
 
 @track showModal = false;
 closeModal(){
-    this.showModal=false;       
+    this.showModal=false;
+    this.submitButtonDisabled = false;       
 }
 @track showModal1 = false;
 closeModal1(){
@@ -54,9 +55,36 @@ closeModal2(){
     timerSeconds = '00';
     timer;
     @track score = 0;
-    @track selectedAnswer; 
+    @track selectedAnswer;     
+
+    // renderedCallback(){
+    //   alert('RenderedCallBack');
+    //   console.log('RenderedCallBack');
+    //  // window.location.replace("https://bhavani23-dev-ed.my.site.com/hospital/secur/logout.jsp");
+    // }
+    // render(){
+    //   alert('render');
+    //   console.log('Render');
+    // }
+    // disconnectedCallback() {
+    //   alert('DisConnectedCallBack');
+    //   console.log('DisConnectedCallBack');
+    // }
+
+    constructor() {
+      super();
+     window.addEventListener('beforeunload', (event) => {
+      // Cancel the event as stated by the standard.
+      event.preventDefault();
+      // Chrome requires returnValue to be set.
+      event.returnValue = 'sample value';
+
+      });
+   }
 
     connectedCallback(){
+      // alert('ConnectedCallBack');
+      // console.log('ConnectedCallBack');
       let oldurl=window.location.href;
       let newurl=new URL(oldurl).searchParams;
       this.candId= newurl.get('candId');
