@@ -4,6 +4,7 @@ import getAssessDet from '@salesforce/apex/candidate.getAssessDet';
 import { createRecord } from 'lightning/uiRecordApi';
 import Cand from '@salesforce/schema/Candidate__c';
 
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { NavigationMixin } from 'lightning/navigation';
 
 export default class Candidate extends NavigationMixin(LightningElement) {
@@ -33,6 +34,7 @@ export default class Candidate extends NavigationMixin(LightningElement) {
 
 
     connectedCallback() {
+        window.sessionStorage.setItem('somekey',1);
         const today = new Date();
         const year = today.getFullYear();
         const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -79,15 +81,13 @@ export default class Candidate extends NavigationMixin(LightningElement) {
                 this.error = undefined;
             })
             .catch(error => {
-                this.error = error;
-                
+                this.error = error;                
             });           
 
         }  
         
         handleQualiChange(event){
-            this.qual = event.target.value; 
-            //this.assessName=event.target.options.find(opt => opt.value === event.detail.value).label;            
+            this.qual = event.target.value;             
         }  
 
         handleClick(event){
@@ -99,9 +99,13 @@ export default class Candidate extends NavigationMixin(LightningElement) {
                 if(ele.name=="email")
                 this.email=ele.value;
                 if(ele.name=="phone")
-                this.phone=ele.value;                              
-            },this);            
-            // if(this.email.length>3 && this.name.length>3 && this.phone.length==10 && this.assess.length>3 && this.this.qual.length>=2){
+                this.phone=ele.value;                                               
+            },this);         
+            if(this.phone.length!=10){
+                this.showToast('ERROR','Please, fill phone number field with 10 digits!', 'error');
+                   // alert('Please, fill phone number field with 10 digits!');   
+            }                                                
+             if(this.email.length>3 && this.name.length>3 && this.phone.length==10 && this.assess.length>3 && this.qual.length>=2){
             var field={'Candidate_Name__c':this.name,'Email__c':this.email,'Phone__c':this.phone,'Assessment__c':this.assess, 'Qualification__c':this.qual}; 
              const can_details={apiName:Cand.objectApiName, fields: field };
 
@@ -111,14 +115,14 @@ export default class Candidate extends NavigationMixin(LightningElement) {
                this.candId=response.id; 
                 this.showModal=true;    
              })
-             .catch(error=>{
-                console.log('Name',this.name,'Email__c',this.email,'Phone__c',this.phone,'Assessment__c',this.assess,'Date',this.date,'Qualification__c',this.qual);
-                alert(error.body.message);
+             .catch(error=>{               
+                this.showToast('ERROR',error.body.message, 'error');
              });
-            // }else{
-            //     alert('Please fill all mandatory fields correctly.');
-            // }
-        }  
+            }else{
+                 this.showToast('ERROR','Please fill all mandatory fields correctly.!', 'error');
+              // alert('Please fill all mandatory fields correctly.');
+            }
+        } 
         
         StartTest(){
             // this[NavigationMixin.Navigate]({
@@ -151,6 +155,15 @@ export default class Candidate extends NavigationMixin(LightningElement) {
 
         closeModal(){
             this.showModal=false;       
+        }
+
+        showToast(title, message, variant) {
+            const evt = new ShowToastEvent({
+                title: title,
+                message: message,
+                variant: variant,
+            });
+            this.dispatchEvent(evt);
         }
 
 }
