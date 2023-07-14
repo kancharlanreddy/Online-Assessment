@@ -1,0 +1,67 @@
+<template>
+    <div style="background-color: skyblue">
+    <lightning-card  icon-name="standard:avatar" title='New Candidate Form' style="font-weight:700;">   
+        <template for:each={candidateDetails} for:item="cand">
+        <div class="slds-grid slds-gutters" key={cand.Id}>
+        
+            <div class="slds-col"> 
+            <div class="slds-p-around_medium lgc-bg">
+                <lightning-input type="text" label="Name" class="inp" disabled required name="name" value={cand.Candidate_Name__c} placeholder="type here..."></lightning-input>
+            </div>
+            <div class="slds-p-around_medium lgc-bg">
+                <lightning-input label="Phone" class="inp" required disabled name="phone" value={cand.Phone__c} placeholder="type here..."></lightning-input>
+            </div>
+            <div class="slds-p-around_medium lgc-bg">              
+                <lightning-input name="types" label="Assessment" disabled required value={cand.Assessment__c}  ></lightning-input> 
+            </div>
+        
+            </div>        
+            <div class="slds-col">
+                <div class="slds-p-around_medium lgc-bg">
+                    <lightning-input type="email" label="Email" required disabled name="email" value={cand.Email__c} onblur={emailHandler} placeholder="type here..."></lightning-input>
+                </div>                 
+            <div class="slds-p-around_medium lgc-bg">              
+                <lightning-input name="types" label="Experience" disabled required value={cand.Experience__c} > </lightning-input> 
+            </div>
+            <div class="slds-p-around_medium lgc-bg">
+                <lightning-input name="types" label="Qualification" disabled required value={cand.Qualification__c} > </lightning-input>
+            </div>
+            <template if:true={examattending}>
+            <span style="float:right;">
+                <lightning-button variant="brand" label="Goto Assessment" onclick={handleAssess} class="slds-m-left_x-small"></lightning-button>
+            </span>
+            </template>
+            <template if:false={submitButtonDisabled}>
+            <span style="float:right;">
+                <lightning-button variant="brand" label="Submit" onclick={handleClick} disabled={submitButtonDisabled} class="slds-m-left_x-small"></lightning-button>
+            </span>
+            </template>
+        </div>
+    
+        </div>  
+    </template>
+       
+        <template if:true={showModal}>
+            <div class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container"  style="width: 35%;">
+                    <header class="slds-modal__header">
+                      <h2 class="slds-modal__title">Assessment</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">                
+                      Hi <b>{name}</b>, <br>
+                      Good luck. Gothrough the following datails.
+                      <br>Topic : <b>{assessName}</b> <br>Questions : <b>{numQues}</b> <br> Duration : <b>{numMins}:00 minutes</b>.
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={closeModal}>Cancel</button>
+                      <button class="slds-button slds-button_brand" onclick={StartTest}>Start Test</button>                    
+                    </footer>
+                  </div>
+              </div>
+              <div class="slds-backdrop slds-backdrop_open"></div>
+           
+          </template>
+        
+    </lightning-card>
+</div>
+</template>

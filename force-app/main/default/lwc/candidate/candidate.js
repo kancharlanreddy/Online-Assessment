@@ -1,6 +1,8 @@
 import { LightningElement, wire, track } from 'lwc';
 import getAssess from '@salesforce/apex/candidate.getAssess';
 import getAssessDet from '@salesforce/apex/candidate.getAssessDet';
+import getCandidateEmail from '@salesforce/apex/candidate.getCandidateEmail';
+import getCandidate from '@salesforce/apex/candidate.getCandidate';
 import { createRecord } from 'lightning/uiRecordApi';
 import Cand from '@salesforce/schema/Candidate__c';
 
@@ -19,6 +21,7 @@ export default class Candidate extends NavigationMixin(LightningElement) {
 
     name;   
     email;
+    em;
     date;
     phone; 
     qual;  
@@ -31,6 +34,7 @@ export default class Candidate extends NavigationMixin(LightningElement) {
     numMins=0;
     
     @track showModal = false;
+    @track submitButtonDisabled = true;
 
 
     connectedCallback() {
@@ -88,7 +92,69 @@ export default class Candidate extends NavigationMixin(LightningElement) {
         
         handleQualiChange(event){
             this.qual = event.target.value;             
-        }  
+        }
+        emailHandler(event){
+            this.email=event.target.value;
+            console.log('Email : ',this.email);
+
+            getCandidate({email: this.email})
+                    .then(result => {       
+                        this.candId = result[0].Id;
+                        this.assess = result[0].Assessment__c;
+                        this.name = result[0].Candidate_Name__c;
+                        this.error = undefined;
+                        this.submitButtonDisabled = true;
+                      //  alert('Details : '+ this.candId+' - '+this.assess+' - '+this.name ); 
+                        this.showToast('Warning','You, already registered with us. Check the next panel.', 'warning');       
+                    })
+                    .catch(error => {
+                        this.submitButtonDisabled = false;
+                        // alert('Got access to rigstered as new Candidate! 1');  
+                        getCandidateEmail({email: this.email})
+                        .then(res => {       
+                            this.submitButtonDisabled = false;
+                           this.el= res[0].Email__c;
+                            alert('Got access to rigstered as new Candidate!',this.el);       
+                        })
+                        .catch(error => {
+                            this.submitButtonDisabled = true;
+                            this.showToast('ERROR','We didn`t find your details with us! Please enter correct email.', 'error');                        
+                        });                                     
+                    });                    
+                   
+                
+        } 
+
+        // @wire(getCandidateEmail, {email:'$email'})
+        // candEmail({data,error}){
+        //     if(data){
+        //         if (!Array.isArray(data) || data.length === 0){
+        //             this.showToast('ERROR','We didn`t find your details with us! Please enter correct email.', 'error');
+        //             this.submitButtonDisabled = true;
+        //             console.log('Data : ',JSON.stringify(data));
+        //         }else if (!Array.isArray(data) || data.length === 1){
+        //             this.em=data[0].Email__c;
+        //             getCandidate({email: this.em})
+        //             .then(result => {       
+        //                 this.candId = result[0].Id;
+        //                 this.assess = result[0].Assessment__c;
+        //                 this.name = result[0].Candidate_Name__c;
+        //                 this.error = undefined;
+        //                 this.submitButtonDisabled = true;
+        //                 alert('Details : '+ this.candId+' - '+this.assess+' - '+this.name );        
+        //             })
+        //             .catch(error => {
+        //                 this.submitButtonDisabled = false;
+        //                 alert('Got access to rigstered as new Candidate!');                        
+        //             });
+        //         }
+
+        //     }if(error){
+        //         this.submitButtonDisabled = true;
+        //         this.showToast('ERROR',error.body.message, 'error');
+        //     }
+        // }        
+       
 
         handleClick(event){
             var inp=this.template.querySelectorAll("lightning-input");
@@ -96,8 +162,8 @@ export default class Candidate extends NavigationMixin(LightningElement) {
             inp.forEach(function(ele){                
                 if(ele.name=="name")
                 this.name=ele.value;                             
-                if(ele.name=="email")
-                this.email=ele.value;
+                // if(ele.name=="email")
+                // this.email=ele.value;
                 if(ele.name=="phone")
                 this.phone=ele.value;                                               
             },this);         
