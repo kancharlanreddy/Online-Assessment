@@ -6,7 +6,7 @@
         <div class="slds-grid slds-gutters">
         <div class="slds-col">
         <div class="slds-p-around_medium lgc-bg">
-            <lightning-input type="email" label="Email" required name="email" value={canEmail} onchange={emailHandler} placeholder="type here..."></lightning-input>
+            <lightning-input type="email" label="Email" required name="email" value={canEmail} onblur={emailHandler} placeholder="type here..."></lightning-input>
         </div> 
         <span style="float:right;">
             <lightning-button variant="brand" label="Check" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
@@ -15,16 +15,17 @@
 </div>
         <template if:true={showModal}>
             <div class="slds-modal slds-fade-in-open">
-                <div class="slds-modal__container">
+                <div class="slds-modal__container"  style="width: 35%;">
                   <header class="slds-modal__header">
                     <h2 class="slds-modal__title">{assessName}</h2>
                   </header>
                   <div class="slds-modal__content slds-p-around_medium">                
                     Hi <b>{name}</b>, <br>
-                    Based on your domain, you have to complete the assessment on <b>{assessName}</b> which consists of <b>{numQues} questions</b> in <b>{numMins}:00 minutes</b>.
+                    Good luck. Gothrough  following datails.
+                    <br>Assessment : <b>{assessName}</b> <br>Questions : <b>{numQues}</b> <br> Duration : <b>{numMins}:00 minutes</b>.
                   </div>
                   <footer class="slds-modal__footer">
-                     <!-- <button class="slds-button slds-button_neutral" onclick={closeModal}>Cancel</button> -->
+                      <button class="slds-button slds-button_neutral" onclick={closeModal}>Cancel</button>
                     <button class="slds-button slds-button_brand" onclick={StartTest}>Start Test</button>                    
                   </footer>
                 </div>

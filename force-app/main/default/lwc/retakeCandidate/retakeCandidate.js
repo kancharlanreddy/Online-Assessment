@@ -53,7 +53,7 @@ candidateData({data,error}){
     if(data){
     if (!Array.isArray(data) || data.length === 0) {
         alert('We did not find your result with us!');
-
+        console.log('Data1 : ',JSON.stringify(data));
         getAssessDet({assId: this.assess})
             .then(result => {
                 this.numQues = result[0].No_of_Questions_to_Answer__c;
@@ -63,17 +63,16 @@ candidateData({data,error}){
                 this.showModal=true;
               //  alert('Assess Details : '+ this.assessName+' - '+this.numQues+' - '+this.numMins );
             })
-            .catch(error => {
-                this.error = error;
-                
+            .catch(error => {                
+                alert('Err - '+ error.body.message);
             });  
 
     } else {
-        alert('We found your result with us! Score: ' + data[0].Score__c+'. We are not taking forword anymore.');
+        alert('We found your result with us! We are not taking forword anymore.');  //  Score: ' + data[0].Score__c+'.
+        console.log('Data 1: ',JSON.stringify(data));
     }
-}
-    if(error){
-        alert('Err - '+ error);
+    }if(error){
+        alert('Err1 - '+ error.body.message);
     }
 }
 
