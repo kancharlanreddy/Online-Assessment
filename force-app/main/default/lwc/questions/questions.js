@@ -15,6 +15,7 @@ export default class Questions extends NavigationMixin(LightningElement) {
  assessId;
  assessName;
  candName;
+ exp;
  
 numQues=0;
 numMins=0;
@@ -74,6 +75,7 @@ closeModal3(){
       this.candName= newurl.get('candName');
       this.assessId= newurl.get('assessId');
       this.assessName= newurl.get('assessName');
+      this.exp= newurl.get('exp');
       this.numQues= newurl.get('numQues');
       this.numMins= newurl.get('numMins');
       this.Minutes=this.numMins+' : 00 Mins';
@@ -86,15 +88,21 @@ closeModal3(){
         second: '2-digit',
         hour12: false
     });
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const currentDate = `${year}-${month}-${day}`;
 
        const candRecord = {
         fields: {
             Id: this.candId,
-            Start_Time__c: startTime
+            Start_Time__c: startTime,
+            Date__c: currentDate
         }
       };
 
-      updateRecord(candRecord)
+        updateRecord(candRecord)
         .then(() => {
             console.log('Candidate record updated with Start time');
         })
@@ -113,15 +121,16 @@ closeModal3(){
     handleBlur() {     
       var data = window.sessionStorage.getItem('somekey');
       if (data !== null) {    
-        sessionStorage.removeItem("somekey");    
+        sessionStorage.removeItem("somekey");
+       
+      //  this.showToast('ERROR','You can`t switch in between browser tabs, can`t hover on other apps!! If you lose focus one more time, we will automatically signedout you.', 'error');    
         alert('You can`t switch in between browser tabs, can`t hover on other apps!! If you lose focus one more time, we will automatically signedout you.'); 
       } else {
        // alert('Logout Functionality! '); 
         window.location.replace("https://bhavani23-dev-ed.my.site.com/hospital/secur/logout.jsp");        
       }
       
-    }         
-    
+    }    
 //     import { CurrentPageReference } from 'lightning/navigation';
 
 //         currentPageReference = null;
@@ -156,12 +165,13 @@ closeModal3(){
       clearInterval(this.timerInterval);
     }  
 
-        @wire(getAllQuestions, { assessment: '$assessId', numQue: '$numQues' })
+        @wire(getAllQuestions, { assessment: '$assessId', numQue: '$numQues', ex:'$exp' })
             ques({data,error}){
                 if(data){                
                     // console.log('Assessment Id : ', this.assessId);    
                 this.examStarted = true;
                 this.questionWrapper = data;
+                console.log('Q Lenght: ',this.questionWrapper.length);
                 this.startTimer();
                 }
                 if(error){                   
@@ -176,18 +186,19 @@ closeModal3(){
     Finish(){
       this.showModal=false; 
       this.submitButtonDisabled = true;
-        let score = 0;
+        let score = 0; let cq=0;
         for (let i = 0; i < this.questionWrapper.length; i++) {
             const question = this.questionWrapper[i].question;
             const selectedOption = this.questionWrapper[i].selectedAnswer;
             if (selectedOption === question.Answer__c) {
-                score++;
+                score+=question.Marks__c;
+                cq+=1;
             }
         }
-        let wrong=this.questionWrapper.length-score;
+        let wrong=this.questionWrapper.length-cq;
         // alert('Your Score Is ' + score);
        
-       var field={'Correct_Answers__c':score,'Score__c':score,'Candidate__c':this.candId,'Assesment__c':this.assessId, 'Wrong_Answers__c':wrong}; 
+       var field={'Correct_Answers__c':cq,'Score__c':score,'Candidate__c':this.candId,'Assesment__c':this.assessId, 'Wrong_Answers__c':wrong}; 
              const res_details={apiName:result.objectApiName, fields: field };
 
              createRecord(res_details)
