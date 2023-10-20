@@ -1,0 +1,31 @@
+<template>
+    
+    <lightning-card title="Candidates Results">
+        
+        <div class="input-container">
+            <lightning-input type="text" onchange={candSearchHandler} placeholder="Search With Topic,Phone,Email...">  >  
+            </lightning-input>
+            <lightning-icon icon-name="utility:search"
+                          alternative-text="Search"
+                          class="search-icon">
+          </lightning-icon>
+          </div>
+          
+        <div class="datatable-container">
+        <template if:true={data}>
+            <lightning-datatable
+            key-field="candidateId"
+            data ={data}
+            columns={columns}
+           
+            >
+        </lightning-datatable>
+        </template>
+        <template if:true={error}>
+            {error}
+        </template>
+        </div>
+    </lightning-card>
+
+
+</template>
