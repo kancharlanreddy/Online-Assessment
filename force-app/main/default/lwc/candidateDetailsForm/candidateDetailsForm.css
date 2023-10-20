@@ -1,0 +1,23 @@
+.input-container {
+
+    position: relative;
+  }
+  .search-icon {
+    position: absolute;
+    top: 70%;
+    right: 10px;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+  .export-cell button {
+    margin: 0 auto;
+    display: block;
+  }
+  
+  .input-container {
+    margin-bottom: 16px; /* Add bottom margin for gap */
+}
+
+.datatable-container {
+    margin-top: 16px; /* Add top margin for gap */
+}
